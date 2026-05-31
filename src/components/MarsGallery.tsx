@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ChevronLeft, ChevronRight, Search } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Search, Camera, Bot } from 'lucide-react'
 
 const NASA_KEY = import.meta.env.VITE_NASA_API_KEY ?? 'DEMO_KEY'
 
@@ -14,6 +14,7 @@ interface MarsPhoto {
 }
 
 const CAMERAS = ['ALL', 'FHAZ', 'RHAZ', 'MAST', 'NAVCAM']
+
 const ONTDEK_PROMPTS = [
   'Zie jij een steen?',
   'Vind je een schaduw!',
@@ -48,7 +49,8 @@ export default function MarsGallery() {
 
   const closeLightbox = useCallback(() => setLightbox(null), [])
   const prev = useCallback(() => setLightbox(i => (i !== null ? Math.max(0, i - 1) : null)), [])
-  const next = useCallback(() => setLightbox(i => (i !== null ? Math.min(filtered.length - 1, i + 1) : null)), [filtered.length])
+  const next = useCallback(() =>
+    setLightbox(i => (i !== null ? Math.min(filtered.length - 1, i + 1) : null)), [filtered.length])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -69,32 +71,32 @@ export default function MarsGallery() {
           viewport={{ once: true }}
           className="mb-6"
         >
-          <h2 className="section-title">🔴 Foto's van Mars</h2>
+          <h2 className="section-title">Foto's van Mars</h2>
           <p className="text-gray-400 mt-2 font-semibold">
             Echte foto's gemaakt door de Curiosity Rover — een robotauto op Mars!
           </p>
         </motion.div>
 
-        {/* Fun Mars fact */}
-        <div className="mb-6 p-4 rounded-3xl bg-red-500/15 border-2 border-red-500/30">
+        <div className="mb-6 p-4 rounded-3xl bg-red-500/15 border-2 border-red-500/30 flex items-start gap-3">
+          <Bot size={18} className="text-red-400 flex-shrink-0 mt-0.5" />
           <p className="text-red-200 font-bold text-sm">
-            🤖 Curiosity rijdt al meer dan 10 jaar rond op Mars en stuurt elke dag nieuwe foto's naar de aarde. Het duurt 20 minuten voordat een foto hier aankomt!
+            Curiosity rijdt al meer dan 10 jaar rond op Mars en stuurt elke dag nieuwe foto's naar de aarde. Het duurt 20 minuten voordat een foto hier aankomt!
           </p>
         </div>
 
-        {/* Camera filter */}
         <div className="flex flex-wrap gap-2 mb-6">
           {CAMERAS.map(cam => (
             <button
               key={cam}
               onClick={() => setCamera(cam)}
-              className={`px-4 py-2 rounded-2xl text-xs font-black transition-all duration-200 border-2 ${
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs font-black transition-all duration-200 border-2 ${
                 camera === cam
                   ? 'bg-red-500/25 border-red-500/60 text-red-300'
                   : 'bg-white/5 border-white/10 text-gray-400 hover:border-white/25 hover:text-white'
               }`}
             >
-              {cam === 'ALL' ? '📷 Alle camera\'s' : `📷 ${cam}`}
+              <Camera size={11} />
+              {cam === 'ALL' ? 'Alle cameras' : cam}
             </button>
           ))}
         </div>
@@ -106,7 +108,7 @@ export default function MarsGallery() {
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <p className="text-center py-20 text-gray-500 font-bold">Geen foto's voor deze camera 🤔</p>
+          <p className="text-center py-20 text-gray-500 font-bold">Geen foto's voor deze camera</p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {filtered.map((photo, i) => {
@@ -130,7 +132,7 @@ export default function MarsGallery() {
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-300 flex flex-col items-center justify-center gap-2 p-3">
                     <Search size={22} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     <span className="text-white text-xs font-black text-center opacity-0 group-hover:opacity-100 transition-opacity leading-tight">
-                      🔍 {prompt}
+                      {prompt}
                     </span>
                   </div>
                   <div className="absolute top-2 left-2">
@@ -173,7 +175,7 @@ export default function MarsGallery() {
               </button>
               <div className="mt-3 text-center p-3 rounded-2xl bg-red-500/15 border border-red-500/30">
                 <p className="text-red-200 font-bold text-sm">
-                  🤖 {filtered[lightbox].rover.name} · {filtered[lightbox].camera.full_name} · Sol {filtered[lightbox].sol} ({filtered[lightbox].earth_date})
+                  {filtered[lightbox].rover.name} · {filtered[lightbox].camera.full_name} · Sol {filtered[lightbox].sol} · {filtered[lightbox].earth_date}
                 </p>
               </div>
             </motion.div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { MapPin } from 'lucide-react'
+import { MapPin, Satellite, Radio, Users, Rocket, Lightbulb, Flame, ChevronRight, type LucideIcon } from 'lucide-react'
 
 interface Launch {
   id: string
@@ -11,7 +11,7 @@ interface Launch {
   datum: Date
   uitleg: string
   kleur: string
-  emoji: string
+  Icon: LucideIcon
   kinderfeit: string
 }
 
@@ -25,19 +25,19 @@ const LANCERINGEN: Launch[] = [
     datum: new Date(Date.now() + 2.5 * 86_400_000),
     uitleg: '23 internet-satellieten de ruimte in',
     kleur: 'from-cyan-500/20 to-cyan-900/10 border-cyan-500/30',
-    emoji: '🛰',
+    Icon: Satellite,
     kinderfeit: 'Dankzij deze satellieten kan straks iedereen op aarde internet hebben!',
   },
   {
     id: '2',
     naam: 'Eutelsat 36D',
     raket: 'Ariane 62',
-    organisatie: 'Arianespace 🇪🇺',
+    organisatie: 'Arianespace',
     locatie: 'Kourou, Frans-Guyana',
     datum: new Date(Date.now() + 6 * 86_400_000),
     uitleg: 'Europese televisiesatelliet',
     kleur: 'from-purple-500/20 to-purple-900/10 border-purple-500/30',
-    emoji: '📡',
+    Icon: Radio,
     kinderfeit: 'Via deze satelliet kunnen mensen TV kijken in Afrika en Europa!',
   },
   {
@@ -49,19 +49,19 @@ const LANCERINGEN: Launch[] = [
     datum: new Date(Date.now() + 14 * 86_400_000),
     uitleg: '4 astronauten naar het ruimtestation',
     kleur: 'from-amber-500/20 to-amber-900/10 border-amber-500/30',
-    emoji: '👨‍🚀',
+    Icon: Users,
     kinderfeit: 'Deze 4 mensen gaan 6 maanden in de ruimte leven en slapen in de ISS!',
   },
   {
     id: '4',
     naam: 'ISAR Spectrum-1',
     raket: 'Spectrum',
-    organisatie: 'ISAR Aerospace 🇩🇪',
+    organisatie: 'ISAR Aerospace',
     locatie: 'Andøya, Noorwegen',
     datum: new Date(Date.now() + 22 * 86_400_000),
     uitleg: 'Eerste lancering van een Europese privéraket',
     kleur: 'from-green-500/20 to-green-900/10 border-green-500/30',
-    emoji: '🚀',
+    Icon: Rocket,
     kinderfeit: 'Dit is de allereerste vlucht van deze nieuwe raket — spannend!',
   },
 ]
@@ -88,6 +88,7 @@ function useCountdown(target: Date) {
 
 function LaunchCard({ launch, isNext }: { launch: Launch; isNext: boolean }) {
   const t = useCountdown(launch.datum)
+  const { Icon } = launch
 
   return (
     <div className={`fun-card p-5 bg-gradient-to-br ${launch.kleur} flex flex-col gap-4`}>
@@ -98,22 +99,21 @@ function LaunchCard({ launch, isNext }: { launch: Launch; isNext: boolean }) {
               {launch.organisatie}
             </span>
             {isNext && (
-              <span className="text-xs font-black px-3 py-1 rounded-full bg-green-400/20 text-green-300 border border-green-400/40 animate-glow-pulse">
-                🔜 VOLGENDE LANCERING
+              <span className="flex items-center gap-1 text-xs font-black px-3 py-1 rounded-full bg-green-400/20 text-green-300 border border-green-400/40 animate-glow-pulse">
+                <ChevronRight size={11} />
+                VOLGENDE LANCERING
               </span>
             )}
           </div>
           <h3 className="font-black text-white text-lg">{launch.naam}</h3>
           <p className="text-gray-300 text-sm font-semibold mt-1">{launch.uitleg}</p>
         </div>
-        <span className="text-4xl flex-shrink-0">{launch.emoji}</span>
+        <Icon size={28} className="text-white/60 flex-shrink-0 mt-1" />
       </div>
 
-      {/* Kinderfeit */}
-      <div className="p-3 rounded-2xl bg-white/10">
-        <p className="text-amber-200 text-xs font-bold leading-relaxed">
-          💡 {launch.kinderfeit}
-        </p>
+      <div className="p-3 rounded-2xl bg-white/10 flex items-start gap-2">
+        <Lightbulb size={14} className="text-amber-400 flex-shrink-0 mt-0.5" />
+        <p className="text-amber-200 text-xs font-bold leading-relaxed">{launch.kinderfeit}</p>
       </div>
 
       <div className="flex items-center gap-1.5 text-xs text-gray-400 font-bold">
@@ -121,7 +121,6 @@ function LaunchCard({ launch, isNext }: { launch: Launch; isNext: boolean }) {
         {launch.locatie}
       </div>
 
-      {/* Countdown */}
       <div className="grid grid-cols-4 gap-2">
         {[
           { v: t.d, l: 'Dagen' },
@@ -130,9 +129,7 @@ function LaunchCard({ launch, isNext }: { launch: Launch; isNext: boolean }) {
           { v: t.s, l: 'Sec' },
         ].map(({ v, l }) => (
           <div key={l} className="text-center p-2 rounded-xl bg-black/30">
-            <div className="font-mono font-black text-xl text-white">
-              {String(v).padStart(2, '0')}
-            </div>
+            <div className="font-mono font-black text-xl text-white">{String(v).padStart(2, '0')}</div>
             <div className="text-xs text-gray-500 font-bold">{l}</div>
           </div>
         ))}
@@ -151,16 +148,19 @@ export default function LaunchSchedule() {
           viewport={{ once: true }}
           className="mb-6"
         >
-          <h2 className="section-title">🚀 Raketten</h2>
+          <h2 className="section-title flex items-center gap-3">
+            <Rocket className="text-amber-400" size={32} />
+            Raketten
+          </h2>
           <p className="text-gray-400 mt-2 font-semibold">
             Hoe lang nog voordat de volgende raket vertrekt?
           </p>
         </motion.div>
 
-        {/* Waarom raket */}
-        <div className="mb-8 p-4 rounded-3xl bg-orange-500/15 border-2 border-orange-500/30">
+        <div className="mb-8 p-4 rounded-3xl bg-orange-500/15 border-2 border-orange-500/30 flex items-start gap-3">
+          <Flame size={18} className="text-orange-400 flex-shrink-0 mt-0.5" />
           <p className="text-orange-200 font-bold text-sm">
-            🔥 Weet jij waarom we raketten gebruiken? Een raket heeft zulke krachtige motoren dat het hard genoeg kan gaan om de zwaartekracht te overwinnen. Dat is meer dan 28.000 km/u!
+            Weet jij waarom we raketten gebruiken? Een raket heeft zulke krachtige motoren dat het hard genoeg kan gaan om de zwaartekracht te overwinnen. Dat is meer dan 28.000 km/u!
           </p>
         </div>
 

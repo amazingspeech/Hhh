@@ -1,3 +1,4 @@
+import { Heart } from 'lucide-react'
 import StarField from './components/StarField'
 import Navbar from './components/Navbar'
 import APODSection from './components/APODSection'
@@ -32,8 +33,8 @@ export default function App() {
               <p className="text-gray-500 text-xs font-bold">Leren over de ruimte — op jouw tempo</p>
             </div>
           </div>
-          <p className="text-gray-600 font-mono text-xs text-center">
-            Gebouwd met ❤️ en echte NASA data · © 2024
+          <p className="text-gray-600 font-mono text-xs flex items-center gap-1.5">
+            Gebouwd met <Heart size={11} className="text-red-400" /> en echte NASA data · 2024
           </p>
         </div>
       </footer>

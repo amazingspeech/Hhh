@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown, ExternalLink, Calendar, Sparkles } from 'lucide-react'
+import { ChevronDown, ExternalLink, Calendar, Sparkles, Eye, EyeOff } from 'lucide-react'
 import Mascotte from './Mascotte'
 
 const NASA_KEY = import.meta.env.VITE_NASA_API_KEY ?? 'DEMO_KEY'
@@ -67,7 +67,6 @@ export default function APODSection() {
 
       <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/40 to-transparent" />
 
-      {/* Top badges */}
       <div className="absolute top-20 left-4 right-4 z-10 flex flex-wrap gap-3 justify-between items-start">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -97,7 +96,6 @@ export default function APODSection() {
         </motion.div>
       </div>
 
-      {/* Main content */}
       <div className="relative z-10 p-5 md:p-12 max-w-4xl mb-12">
         {loading ? (
           <div className="animate-pulse space-y-4">
@@ -114,7 +112,6 @@ export default function APODSection() {
               {apod.title}
             </h1>
 
-            {/* Discovery prompt */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-amber-400/20 border border-amber-400/40 mb-5">
               <Sparkles size={14} className="text-amber-400" />
               <span className="text-amber-300 text-sm font-bold">{vraag}</span>
@@ -122,9 +119,9 @@ export default function APODSection() {
 
             <button
               onClick={() => setShowUitleg(!showUitleg)}
-              className="flex items-center gap-2 text-white/80 hover:text-white text-sm font-bold mb-3 transition-colors group"
+              className="flex items-center gap-2 text-white/80 hover:text-white text-sm font-bold mb-3 transition-colors"
             >
-              <span className="text-lg">{showUitleg ? '🙈' : '🔭'}</span>
+              {showUitleg ? <EyeOff size={15} className="text-amber-400" /> : <Eye size={15} className="text-amber-400" />}
               {showUitleg ? 'Verberg uitleg' : 'Wat is dit precies?'}
               <ChevronDown size={14} className={`transition-transform duration-300 ${showUitleg ? 'rotate-180' : ''}`} />
             </button>
@@ -158,7 +155,6 @@ export default function APODSection() {
         ) : null}
       </div>
 
-      {/* Floating mascotte */}
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -166,8 +162,8 @@ export default function APODSection() {
         className="absolute bottom-24 right-6 z-20 hidden md:block"
       >
         <Mascotte size={80} />
-        <div className="absolute -top-10 -left-28 bg-amber-400 text-black text-xs font-black px-3 py-1.5 rounded-2xl rounded-br-none whitespace-nowrap">
-          Hoi! Ik ben Slim! ⭐
+        <div className="absolute -top-10 -left-24 bg-amber-400 text-black text-xs font-black px-3 py-1.5 rounded-2xl rounded-br-none whitespace-nowrap">
+          Hoi! Ik ben Slim!
         </div>
       </motion.div>
 

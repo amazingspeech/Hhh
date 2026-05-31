@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { Camera, Globe, Satellite, Target, Zap, Lightbulb, Rocket, type LucideIcon } from 'lucide-react'
 import Mascotte from './Mascotte'
 
-const NAV = [
-  { id: 'apod', label: '📸 Dagfoto' },
-  { id: 'planeten', label: '🪐 Planeten' },
-  { id: 'iss', label: '🛰 Ruimtestation' },
-  { id: 'mars', label: '🔴 Mars' },
-  { id: 'asteroids', label: '☄️ Ruimterotsen' },
-  { id: 'weetjes', label: '💡 Weetjes' },
-  { id: 'launches', label: '🚀 Raketten' },
+const NAV: { id: string; label: string; Icon: LucideIcon }[] = [
+  { id: 'apod',      label: 'Dagfoto',       Icon: Camera    },
+  { id: 'planeten',  label: 'Planeten',       Icon: Globe     },
+  { id: 'iss',       label: 'Ruimtestation',  Icon: Satellite },
+  { id: 'mars',      label: 'Mars',           Icon: Target    },
+  { id: 'asteroids', label: 'Ruimterotsen',   Icon: Zap       },
+  { id: 'weetjes',   label: 'Weetjes',        Icon: Lightbulb },
+  { id: 'launches',  label: 'Raketten',       Icon: Rocket    },
 ]
 
 export default function Navbar() {
@@ -37,7 +38,6 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="flex items-center gap-2 group"
@@ -49,20 +49,19 @@ export default function Navbar() {
           </div>
         </button>
 
-        {/* Desktop nav */}
         <div className="hidden lg:flex items-center gap-1">
-          {NAV.map(({ id, label }) => (
+          {NAV.map(({ id, label, Icon }) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className="px-3 py-1.5 rounded-xl text-xs font-bold text-gray-300 hover:text-amber-400 hover:bg-amber-400/10 transition-all duration-200"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-gray-300 hover:text-amber-400 hover:bg-amber-400/10 transition-all duration-200"
             >
+              <Icon size={13} />
               {label}
             </button>
           ))}
         </div>
 
-        {/* Mobile hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="lg:hidden p-2 rounded-xl text-white hover:bg-white/10 transition-colors"
@@ -75,15 +74,15 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu */}
       {menuOpen && (
         <div className="lg:hidden bg-black/90 backdrop-blur-xl border-t border-white/10 px-4 py-3 grid grid-cols-2 gap-2">
-          {NAV.map(({ id, label }) => (
+          {NAV.map(({ id, label, Icon }) => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className="px-3 py-2 rounded-xl text-sm font-bold text-gray-300 hover:text-amber-400 hover:bg-amber-400/10 transition-all text-left"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-gray-300 hover:text-amber-400 hover:bg-amber-400/10 transition-all text-left"
             >
+              <Icon size={14} />
               {label}
             </button>
           ))}
