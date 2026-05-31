@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps'
+import { Satellite, MapPin, Map, Rocket, Zap, Info, type LucideIcon } from 'lucide-react'
 
 const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
 
@@ -13,11 +14,11 @@ interface ISSData {
 }
 
 const FUNFEITEN = [
-  'De ISS is zo groot als een voetbalveld! 🏟',
-  'Er wonen altijd 6 mensen in de ruimte op de ISS 👨‍🚀',
-  'De ISS maakt 16 zonsopgangen per dag mee 🌅',
-  'In de ISS zweef je — net als een vlieg! 🪰',
-  'De ISS is al meer dan 20 jaar in de ruimte 🎂',
+  'De ISS is zo groot als een voetbalveld!',
+  'Er wonen altijd 6 mensen in de ruimte op de ISS.',
+  'De ISS maakt 16 zonsopgangen per dag mee.',
+  'In de ISS zweef je — net als een vlieg!',
+  'De ISS is al meer dan 20 jaar in de ruimte.',
 ]
 
 export default function ISSTracker() {
@@ -60,18 +61,20 @@ export default function ISSTracker() {
             <span className="live-dot" />
             <span className="text-green-400 font-mono text-xs font-bold tracking-widest">LIVE TRACKING</span>
           </div>
-          <h2 className="section-title">🛰 Ruimtestation ISS</h2>
+          <h2 className="section-title flex items-center gap-3">
+            <Satellite className="text-amber-400" size={32} />
+            Ruimtestation ISS
+          </h2>
           <p className="text-gray-400 mt-2 font-semibold">Kijk waar de ISS nu is — elke 5 seconden bijgewerkt!</p>
         </motion.div>
 
-        {/* Fun fact banner */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           className="mb-6 p-4 rounded-3xl bg-amber-400/15 border-2 border-amber-400/30 flex items-center gap-3"
         >
-          <span className="text-2xl">⭐</span>
+          <Info size={18} className="text-amber-400 flex-shrink-0" />
           <p className="text-amber-200 font-bold text-sm">{FUNFEITEN[feitIdx]}</p>
         </motion.div>
 
@@ -106,7 +109,7 @@ export default function ISSTracker() {
                       <animate attributeName="opacity" from="0.6" to="0" dur="2s" repeatCount="indefinite" />
                     </circle>
                     <text textAnchor="middle" y={-14} style={{ fill: '#fbbf24', fontSize: '9px', fontFamily: 'Space Mono', fontWeight: 'bold' }}>
-                      ISS 🛰
+                      ISS
                     </text>
                   </g>
                 </Marker>
@@ -114,25 +117,25 @@ export default function ISSTracker() {
             </ComposableMap>
             {updated && (
               <div className="absolute bottom-3 right-4 text-xs text-gray-600 font-mono">
-                ⟳ {updated.toLocaleTimeString('nl-NL')}
+                bijgewerkt: {updated.toLocaleTimeString('nl-NL')}
               </div>
             )}
           </div>
 
           {iss ? (
             <div className="p-5 grid grid-cols-2 md:grid-cols-4 gap-3">
-              <FunStat emoji="📍" label="Breedtegraad" value={`${iss.latitude.toFixed(2)}°`} />
-              <FunStat emoji="🗺" label="Lengtegraad" value={`${iss.longitude.toFixed(2)}°`} />
-              <FunStat emoji="🚀" label="Hoogte" value={`${Math.round(iss.altitude)} km`} sub="boven de aarde" />
+              <FunStat Icon={MapPin}  label="Breedtegraad" value={`${iss.latitude.toFixed(2)}°`} />
+              <FunStat Icon={Map}     label="Lengtegraad"  value={`${iss.longitude.toFixed(2)}°`} />
+              <FunStat Icon={Rocket}  label="Hoogte"       value={`${Math.round(iss.altitude)} km`} sub="boven de aarde" />
               <FunStat
-                emoji="⚡"
+                Icon={Zap}
                 label="Snelheid"
                 value={`${speedKmh.toLocaleString('nl')} km/u`}
-                sub={`Dat is ${planes}× sneller dan een vliegtuig!`}
+                sub={`${planes}× sneller dan een vliegtuig`}
               />
             </div>
           ) : (
-            <div className="p-5 text-center text-gray-500 font-bold">Verbinden met ISS... 🛰</div>
+            <div className="p-5 text-center text-gray-500 font-bold">Verbinden met ISS telemetrie...</div>
           )}
         </div>
       </div>
@@ -140,10 +143,15 @@ export default function ISSTracker() {
   )
 }
 
-function FunStat({ emoji, label, value, sub }: { emoji: string; label: string; value: string; sub?: string }) {
+function FunStat({ Icon, label, value, sub }: {
+  Icon: LucideIcon
+  label: string
+  value: string
+  sub?: string
+}) {
   return (
     <div className="text-center p-4 rounded-2xl bg-white/5">
-      <div className="text-2xl mb-1">{emoji}</div>
+      <Icon size={18} className="text-amber-400 mx-auto mb-2" />
       <div className="font-black text-white text-lg font-mono">{value}</div>
       <div className="text-gray-400 text-xs font-bold mt-0.5">{label}</div>
       {sub && <div className="text-amber-400 text-xs font-bold mt-1">{sub}</div>}
