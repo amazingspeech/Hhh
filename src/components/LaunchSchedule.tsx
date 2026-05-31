@@ -1,85 +1,68 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Rocket, MapPin, Calendar, ExternalLink } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 
 interface Launch {
   id: string
-  name: string
-  rocket: string
-  provider: string
-  site: string
-  date: Date
-  description: string
-  color: 'cyan' | 'purple' | 'amber' | 'green'
-  missionType: string
+  naam: string
+  raket: string
+  organisatie: string
+  locatie: string
+  datum: Date
+  uitleg: string
+  kleur: string
+  emoji: string
+  kinderfeit: string
 }
 
-const LAUNCHES: Launch[] = [
+const LANCERINGEN: Launch[] = [
   {
     id: '1',
-    name: 'Starlink Group 10-8',
-    rocket: 'Falcon 9 B5',
-    provider: 'SpaceX',
-    site: 'SLC-40, Kennedy Space Center',
-    date: new Date(Date.now() + 2.5 * 86_400_000),
-    description: '23 Starlink internet-satellieten in lage aardbaan',
-    color: 'cyan',
-    missionType: 'Commercieel',
+    naam: 'Starlink Groep 10-8',
+    raket: 'Falcon 9',
+    organisatie: 'SpaceX',
+    locatie: 'Kennedy Space Center, Florida',
+    datum: new Date(Date.now() + 2.5 * 86_400_000),
+    uitleg: '23 internet-satellieten de ruimte in',
+    kleur: 'from-cyan-500/20 to-cyan-900/10 border-cyan-500/30',
+    emoji: '🛰',
+    kinderfeit: 'Dankzij deze satellieten kan straks iedereen op aarde internet hebben!',
   },
   {
     id: '2',
-    name: 'Eutelsat 36D',
-    rocket: 'Ariane 62',
-    provider: 'Arianespace',
-    site: 'ELA-4, Kourou — Frans-Guyana',
-    date: new Date(Date.now() + 6 * 86_400_000),
-    description: 'Europese communicatiesatelliet voor TV-distributie',
-    color: 'purple',
-    missionType: 'GEO Satelliet',
+    naam: 'Eutelsat 36D',
+    raket: 'Ariane 62',
+    organisatie: 'Arianespace 🇪🇺',
+    locatie: 'Kourou, Frans-Guyana',
+    datum: new Date(Date.now() + 6 * 86_400_000),
+    uitleg: 'Europese televisiesatelliet',
+    kleur: 'from-purple-500/20 to-purple-900/10 border-purple-500/30',
+    emoji: '📡',
+    kinderfeit: 'Via deze satelliet kunnen mensen TV kijken in Afrika en Europa!',
   },
   {
     id: '3',
-    name: 'Crew-11 ISS Missie',
-    rocket: 'Falcon 9',
-    provider: 'SpaceX / NASA',
-    site: 'LC-39A, Kennedy Space Center',
-    date: new Date(Date.now() + 14 * 86_400_000),
-    description: 'Bemande missie naar het ISS — 4 astronauten, 6 maanden verblijf',
-    color: 'amber',
-    missionType: 'Bemand',
+    naam: 'Crew-11 naar het ISS',
+    raket: 'Falcon 9',
+    organisatie: 'SpaceX & NASA',
+    locatie: 'Kennedy Space Center, Florida',
+    datum: new Date(Date.now() + 14 * 86_400_000),
+    uitleg: '4 astronauten naar het ruimtestation',
+    kleur: 'from-amber-500/20 to-amber-900/10 border-amber-500/30',
+    emoji: '👨‍🚀',
+    kinderfeit: 'Deze 4 mensen gaan 6 maanden in de ruimte leven en slapen in de ISS!',
   },
   {
     id: '4',
-    name: 'ISAR Spectrum-1',
-    rocket: 'Spectrum',
-    provider: 'ISAR Aerospace 🇩🇪',
-    site: 'Andøya Space Center, Noorwegen',
-    date: new Date(Date.now() + 22 * 86_400_000),
-    description: 'Eerste vlucht van Europese micro-raket voor kleine satellieten',
-    color: 'green',
-    missionType: 'Testlancering',
-  },
-  {
-    id: '5',
-    name: 'OneWeb L22',
-    rocket: 'Falcon 9',
-    provider: 'SpaceX',
-    site: 'SLC-4E, Vandenberg SFB',
-    date: new Date(Date.now() + 30 * 86_400_000),
-    description: '36 OneWeb-satellieten voor mondiale breedbanddekking',
-    color: 'cyan',
-    missionType: 'Constellatie',
-  },
-  {
-    id: '6',
-    name: 'Galileo FOC-27/28',
-    rocket: 'Ariane 62',
-    provider: 'ESA / Arianespace',
-    site: 'ELA-4, Kourou — Frans-Guyana',
-    date: new Date(Date.now() + 38 * 86_400_000),
-    description: 'Twee nieuwe Galileo navigatiesatellieten voor Europees GPS-systeem',
-    color: 'purple',
-    missionType: 'Navigatie',
+    naam: 'ISAR Spectrum-1',
+    raket: 'Spectrum',
+    organisatie: 'ISAR Aerospace 🇩🇪',
+    locatie: 'Andøya, Noorwegen',
+    datum: new Date(Date.now() + 22 * 86_400_000),
+    uitleg: 'Eerste lancering van een Europese privéraket',
+    kleur: 'from-green-500/20 to-green-900/10 border-green-500/30',
+    emoji: '🚀',
+    kinderfeit: 'Dit is de allereerste vlucht van deze nieuwe raket — spannend!',
   },
 ]
 
@@ -103,71 +86,42 @@ function useCountdown(target: Date) {
   return t
 }
 
-const COLORS = {
-  cyan: {
-    badge: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
-    accent: 'text-cyan-400',
-    border: 'border-cyan-500/30',
-  },
-  purple: {
-    badge: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
-    accent: 'text-purple-400',
-    border: 'border-purple-500/30',
-  },
-  amber: {
-    badge: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-    accent: 'text-amber-400',
-    border: 'border-amber-500/30',
-  },
-  green: {
-    badge: 'bg-green-500/15 text-green-400 border-green-500/30',
-    accent: 'text-green-400',
-    border: 'border-green-500/30',
-  },
-}
-
 function LaunchCard({ launch, isNext }: { launch: Launch; isNext: boolean }) {
-  const t = useCountdown(launch.date)
-  const c = COLORS[launch.color]
+  const t = useCountdown(launch.datum)
 
   return (
-    <div className={`glass-card rounded-2xl p-5 flex flex-col gap-4 transition-all duration-300 hover:bg-white/[0.07] ${isNext ? c.border : ''}`}>
+    <div className={`fun-card p-5 bg-gradient-to-br ${launch.kleur} flex flex-col gap-4`}>
       <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
+        <div>
           <div className="flex flex-wrap gap-2 mb-2">
-            <span className={`text-xs px-2.5 py-0.5 rounded-full border font-mono ${c.badge}`}>
-              {launch.provider}
-            </span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full border border-white/10 bg-white/5 text-gray-400 font-mono">
-              {launch.missionType}
+            <span className="text-xs font-black px-3 py-1 rounded-full bg-white/10 text-gray-300">
+              {launch.organisatie}
             </span>
             {isNext && (
-              <span className="text-xs px-2.5 py-0.5 rounded-full border border-green-500/40 bg-green-500/15 text-green-400 font-mono animate-glow-pulse">
-                ● VOLGENDE
+              <span className="text-xs font-black px-3 py-1 rounded-full bg-green-400/20 text-green-300 border border-green-400/40 animate-glow-pulse">
+                🔜 VOLGENDE LANCERING
               </span>
             )}
           </div>
-          <h3 className="font-bold text-white text-base">{launch.name}</h3>
-          <p className="text-gray-400 text-xs mt-1 leading-relaxed">{launch.description}</p>
+          <h3 className="font-black text-white text-lg">{launch.naam}</h3>
+          <p className="text-gray-300 text-sm font-semibold mt-1">{launch.uitleg}</p>
         </div>
-        <Rocket size={22} className={`flex-shrink-0 mt-1 ${c.accent}`} />
+        <span className="text-4xl flex-shrink-0">{launch.emoji}</span>
       </div>
 
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
-        <span className="flex items-center gap-1.5">
-          <Rocket size={11} className={c.accent} />
-          {launch.rocket}
-        </span>
-        <span className="flex items-center gap-1.5">
-          <MapPin size={11} className={c.accent} />
-          {launch.site}
-        </span>
-        <span className="flex items-center gap-1.5">
-          <Calendar size={11} className={c.accent} />
-          {launch.date.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}
-        </span>
+      {/* Kinderfeit */}
+      <div className="p-3 rounded-2xl bg-white/10">
+        <p className="text-amber-200 text-xs font-bold leading-relaxed">
+          💡 {launch.kinderfeit}
+        </p>
       </div>
 
+      <div className="flex items-center gap-1.5 text-xs text-gray-400 font-bold">
+        <MapPin size={11} />
+        {launch.locatie}
+      </div>
+
+      {/* Countdown */}
       <div className="grid grid-cols-4 gap-2">
         {[
           { v: t.d, l: 'Dagen' },
@@ -175,11 +129,11 @@ function LaunchCard({ launch, isNext }: { launch: Launch; isNext: boolean }) {
           { v: t.m, l: 'Min' },
           { v: t.s, l: 'Sec' },
         ].map(({ v, l }) => (
-          <div key={l} className="text-center p-2 rounded-lg bg-black/30">
-            <div className={`font-mono text-xl font-bold ${isNext ? c.accent : 'text-white'}`}>
+          <div key={l} className="text-center p-2 rounded-xl bg-black/30">
+            <div className="font-mono font-black text-xl text-white">
               {String(v).padStart(2, '0')}
             </div>
-            <div className="text-xs text-gray-600">{l}</div>
+            <div className="text-xs text-gray-500 font-bold">{l}</div>
           </div>
         ))}
       </div>
@@ -195,32 +149,29 @@ export default function LaunchSchedule() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-10 flex items-end justify-between gap-4"
+          className="mb-6"
         >
-          <div>
-            <h2 className="section-title">🚀 Lanceringen</h2>
-            <p className="text-gray-400 mt-2 text-sm">
-              Aankomende ruimtelanceringen wereldwijd — live aftellen
-            </p>
-          </div>
-          <a
-            href="https://www.rocketlaunch.live"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden md:flex items-center gap-1.5 text-xs text-gray-500 hover:text-cyan-400 transition-colors font-mono"
-          >
-            Meer lanceringen <ExternalLink size={11} />
-          </a>
+          <h2 className="section-title">🚀 Raketten</h2>
+          <p className="text-gray-400 mt-2 font-semibold">
+            Hoe lang nog voordat de volgende raket vertrekt?
+          </p>
         </motion.div>
 
+        {/* Waarom raket */}
+        <div className="mb-8 p-4 rounded-3xl bg-orange-500/15 border-2 border-orange-500/30">
+          <p className="text-orange-200 font-bold text-sm">
+            🔥 Weet jij waarom we raketten gebruiken? Een raket heeft zulke krachtige motoren dat het hard genoeg kan gaan om de zwaartekracht te overwinnen. Dat is meer dan 28.000 km/u!
+          </p>
+        </div>
+
         <div className="grid md:grid-cols-2 gap-5">
-          {LAUNCHES.map((launch, i) => (
+          {LANCERINGEN.map((launch, i) => (
             <motion.div
               key={launch.id}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.09 }}
+              transition={{ delay: i * 0.1 }}
             >
               <LaunchCard launch={launch} isNext={i === 0} />
             </motion.div>

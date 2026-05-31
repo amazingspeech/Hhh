@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { AlertTriangle, CheckCircle, Maximize2 } from 'lucide-react'
 
 const NASA_KEY = import.meta.env.VITE_NASA_API_KEY ?? 'DEMO_KEY'
 
@@ -20,18 +19,19 @@ interface Asteroid {
   close_approach_data: CloseApproach[]
 }
 
-function sizeLabel(m: number): string {
-  if (m < 20) return 'Auto'
-  if (m < 100) return 'Huis'
-  if (m < 300) return 'Vliegtuig'
-  if (m < 600) return 'Wolkenkrabber'
-  return 'Berg'
+function grootteVergelijking(m: number): { label: string; emoji: string } {
+  if (m < 5) return { label: 'Zo groot als een bal', emoji: '⚽' }
+  if (m < 15) return { label: 'Zo groot als een auto', emoji: '🚗' }
+  if (m < 40) return { label: 'Zo groot als een huis', emoji: '🏠' }
+  if (m < 100) return { label: 'Zo groot als een flat', emoji: '🏢' }
+  if (m < 300) return { label: 'Zo groot als een stadion', emoji: '🏟' }
+  if (m < 600) return { label: 'Zo groot als een berg', emoji: '⛰' }
+  return { label: 'Gigantisch — groter dan een berg!', emoji: '🌋' }
 }
 
 export default function AsteroidRadar() {
   const [asteroids, setAsteroids] = useState<Asteroid[]>([])
   const [loading, setLoading] = useState(true)
-  const [hazardOnly, setHazardOnly] = useState(false)
 
   useEffect(() => {
     const fetchAsteroids = async () => {
@@ -49,19 +49,12 @@ export default function AsteroidRadar() {
           const db = parseFloat(b.close_approach_data[0]?.miss_distance.kilometers ?? '999999999')
           return da - db
         })
-        setAsteroids(sorted.slice(0, 12))
-      } catch {
-        // ignore
-      } finally {
-        setLoading(false)
-      }
+        setAsteroids(sorted.slice(0, 8))
+      } catch { /* ignore */ }
+      finally { setLoading(false) }
     }
     fetchAsteroids()
   }, [])
-
-  const visible = hazardOnly
-    ? asteroids.filter(a => a.is_potentially_hazardous_asteroid)
-    : asteroids
 
   return (
     <section id="asteroids" className="py-24 px-4 md:px-8">
@@ -70,36 +63,30 @@ export default function AsteroidRadar() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-10 flex flex-col md:flex-row md:items-end gap-4 justify-between"
+          className="mb-6"
         >
-          <div>
-            <h2 className="section-title">☄️ Asteroïde Radar</h2>
-            <p className="text-gray-400 mt-2 text-sm">
-              Objecten die deze week langs de aarde vliegen — gesorteerd op dichtstbijzijnde passage
-            </p>
-          </div>
-          <button
-            onClick={() => setHazardOnly(!hazardOnly)}
-            className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all flex items-center gap-2 ${
-              hazardOnly
-                ? 'bg-red-500/20 border-red-500/50 text-red-300'
-                : 'glass-card text-gray-400 hover:text-white'
-            }`}
-          >
-            <AlertTriangle size={13} />
-            {hazardOnly ? 'Toon alle' : 'Alleen gevaarlijk'}
-          </button>
+          <h2 className="section-title">☄️ Ruimterotsen</h2>
+          <p className="text-gray-400 mt-2 font-semibold">
+            Deze rotsblokken vliegen deze week langs de aarde!
+          </p>
         </motion.div>
+
+        {/* Uitleg banner */}
+        <div className="mb-6 p-4 rounded-3xl bg-purple-500/15 border-2 border-purple-500/30">
+          <p className="text-purple-200 font-bold text-sm">
+            🪨 Asteroïden zijn grote rotsblokken die door het heelal zweven. De meeste vliegen veilig langs — NASA houdt ze allemaal in de gaten!
+          </p>
+        </div>
 
         {loading ? (
           <div className="space-y-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-20 rounded-xl bg-white/5 animate-pulse" />
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-24 rounded-3xl bg-white/5 animate-pulse" />
             ))}
           </div>
         ) : (
           <div className="space-y-3">
-            {visible.map((ast, i) => {
+            {asteroids.map((ast, i) => {
               const ca = ast.close_approach_data[0]
               if (!ca) return null
               const km = parseFloat(ca.miss_distance.kilometers)
@@ -109,7 +96,8 @@ export default function AsteroidRadar() {
                 (ast.estimated_diameter.meters.estimated_diameter_min +
                   ast.estimated_diameter.meters.estimated_diameter_max) / 2
               )
-              const hazard = ast.is_potentially_hazardous_asteroid
+              const { label, emoji } = grootteVergelijking(diam)
+              const gevaarlijk = ast.is_potentially_hazardous_asteroid
               const moonDist = (km / 384_400).toFixed(1)
 
               return (
@@ -118,54 +106,35 @@ export default function AsteroidRadar() {
                   initial={{ opacity: 0, x: -24 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.06 }}
-                  className={`rounded-xl p-4 flex flex-col md:flex-row md:items-center gap-4 glass-card ${
-                    hazard ? 'border-red-500/25' : ''
+                  transition={{ delay: i * 0.07 }}
+                  className={`fun-card p-4 flex flex-col md:flex-row md:items-center gap-4 ${
+                    gevaarlijk ? 'border-red-400/40 bg-red-500/5' : 'border-white/10'
                   }`}
                 >
+                  {/* Size visual */}
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    {hazard ? (
-                      <AlertTriangle size={20} className="text-red-400 flex-shrink-0" />
-                    ) : (
-                      <CheckCircle size={20} className="text-green-400 flex-shrink-0" />
-                    )}
+                    <div className="text-3xl">{emoji}</div>
                     <div className="min-w-0">
-                      <div className="font-mono font-bold text-white truncate text-sm">
+                      <div className="font-black text-white truncate text-sm">
                         {ast.name.replace(/[()]/g, '').trim()}
                       </div>
-                      <div className={`text-xs mt-0.5 ${hazard ? 'text-red-400' : 'text-green-500'}`}>
-                        {hazard ? '⚠ Potentieel gevaarlijk' : '✓ Veilige passage'}
+                      <div className="font-bold text-xs mt-0.5" style={{ color: gevaarlijk ? '#f87171' : '#4ade80' }}>
+                        {gevaarlijk ? '⚠️ NASA houdt dit goed in de gaten' : '✅ Vliegt veilig langs'}
                       </div>
+                      <div className="text-amber-300 font-bold text-xs mt-1">{label}</div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-4 gap-3 text-center">
-                    <div>
-                      <div className="text-amber-400 font-mono font-bold text-sm">{moonDist}×</div>
-                      <div className="text-gray-500 text-xs">Maanafstand</div>
-                    </div>
-                    <div>
-                      <div className="text-blue-400 font-mono font-bold text-sm">{lunar} LD</div>
-                      <div className="text-gray-500 text-xs">Lunar Dist.</div>
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-center gap-0.5">
-                        <Maximize2 size={10} className="text-cyan-400" />
-                        <span className="text-cyan-400 font-mono font-bold text-sm">{diam}m</span>
-                      </div>
-                      <div className="text-gray-500 text-xs">{sizeLabel(diam)}</div>
-                    </div>
-                    <div>
-                      <div className="text-purple-400 font-mono font-bold text-sm">
-                        {(vel / 1000).toFixed(0)}k
-                      </div>
-                      <div className="text-gray-500 text-xs">km/uur</div>
-                    </div>
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 gap-3 text-center flex-shrink-0">
+                    <MiniStat emoji="🌙" label="Maanafstand" value={`${moonDist}×`} />
+                    <MiniStat emoji="📏" label="Grootte" value={`${diam}m`} />
+                    <MiniStat emoji="💨" label="Snelheid" value={`${(vel / 1000).toFixed(0)}k km/u`} />
                   </div>
 
-                  <div className="text-right flex-shrink-0">
-                    <div className="text-white text-sm font-medium">{ca.close_approach_date}</div>
-                    <div className="text-gray-500 text-xs">dichtstbijzijnde punt</div>
+                  <div className="text-right flex-shrink-0 hidden md:block">
+                    <div className="text-white font-black text-sm">{ca.close_approach_date}</div>
+                    <div className="text-gray-500 text-xs font-bold">{lunar} maanafstanden</div>
                   </div>
                 </motion.div>
               )
@@ -174,5 +143,15 @@ export default function AsteroidRadar() {
         )}
       </div>
     </section>
+  )
+}
+
+function MiniStat({ emoji, label, value }: { emoji: string; label: string; value: string }) {
+  return (
+    <div className="bg-white/5 rounded-2xl p-2">
+      <div className="text-lg">{emoji}</div>
+      <div className="font-black text-white text-xs">{value}</div>
+      <div className="text-gray-500 text-xs font-bold">{label}</div>
+    </div>
   )
 }

@@ -15,34 +15,37 @@ html {
 body {
   background: #030712;
   color: white;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Nunito', sans-serif;
   overflow-x: hidden;
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl;
+  }
+
+  .fun-card {
+    @apply bg-white/5 backdrop-blur-md border-2 rounded-4xl transition-all duration-300;
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl font-bold tracking-tight;
+    @apply text-3xl md:text-4xl font-extrabold tracking-tight;
+  }
+
+  .weetje-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold;
   }
 
   .live-dot {
-    @apply inline-block w-2 h-2 rounded-full bg-green-400 animate-pulse;
+    @apply inline-block w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse;
+  }
+
+  .planet-btn {
+    @apply flex flex-col items-center gap-2 p-3 rounded-2xl cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95;
   }
 }
 
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #0a0a1a;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(34, 211, 238, 0.3);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(34, 211, 238, 0.6);
-}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #0a0a1a; }
+::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(251, 191, 36, 0.6); }
